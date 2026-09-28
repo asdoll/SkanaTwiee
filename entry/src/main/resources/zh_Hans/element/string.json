@@ -1,0 +1,340 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "SkanaTwiee 主模块"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "SkanaTwiee"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "SkanaTwiee"
+    },
+    {
+      "name": "app_title",
+      "value": "SkanaTwiee"
+    },
+    {
+      "name": "tab_following",
+      "value": "关注"
+    },
+    {
+      "name": "tab_search",
+      "value": "搜索"
+    },
+    {
+      "name": "tab_settings",
+      "value": "我的"
+    },
+    {
+      "name": "settings",
+      "value": "设置"
+    },
+    {
+      "name": "tab_live",
+      "value": "直播"
+    },
+    {
+      "name": "tab_users",
+      "value": "用户"
+    },
+    {
+      "name": "search_hint_live",
+      "value": "搜索直播间"
+    },
+    {
+      "name": "search_hint_users",
+      "value": "搜索用户"
+    },
+    {
+      "name": "viewers",
+      "value": "人观看"
+    },
+    {
+      "name": "followers",
+      "value": "关注者"
+    },
+    {
+      "name": "uptime",
+      "value": "已开播"
+    },
+    {
+      "name": "no_streams",
+      "value": "没有找到直播"
+    },
+    {
+      "name": "no_users",
+      "value": "没有找到用户"
+    },
+    {
+      "name": "channel_page",
+      "value": "频道主页"
+    },
+    {
+      "name": "speed",
+      "value": "播放速度"
+    },
+    {
+      "name": "chat_hint",
+      "value": "发送消息"
+    },
+    {
+      "name": "no_emotes",
+      "value": "暂无可用表情"
+    },
+    {
+      "name": "live_login_required",
+      "value": "登录 Twitch 后即可查看你关注的直播。"
+    },
+    {
+      "name": "offline",
+      "value": "未开播"
+    },
+    {
+      "name": "no_followed_users",
+      "value": "没有找到已关注的频道"
+    },
+    {
+      "name": "follow",
+      "value": "关注"
+    },
+    {
+      "name": "following",
+      "value": "已关注"
+    },
+    {
+      "name": "videos",
+      "value": "视频"
+    },
+    {
+      "name": "video_type_archive",
+      "value": "往期直播"
+    },
+    {
+      "name": "video_type_highlight",
+      "value": "精彩片段"
+    },
+    {
+      "name": "video_type_upload",
+      "value": "上传视频"
+    },
+    {
+      "name": "search_hint",
+      "value": "搜索视频"
+    },
+    {
+      "name": "login",
+      "value": "登录 Twitch"
+    },
+    {
+      "name": "logout",
+      "value": "退出登录"
+    },
+    {
+      "name": "not_logged_in",
+      "value": "未登录"
+    },
+    {
+      "name": "login_required",
+      "value": "登录 Twitch 后即可查看你关注频道的视频。"
+    },
+    {
+      "name": "no_results",
+      "value": "没有找到视频"
+    },
+    {
+      "name": "load_failed",
+      "value": "加载失败"
+    },
+    {
+      "name": "retry",
+      "value": "重试"
+    },
+    {
+      "name": "error_hint",
+      "value": "试试下面的其他清晰度，或重试。"
+    },
+    {
+      "name": "favourites",
+      "value": "收藏"
+    },
+    {
+      "name": "downloads",
+      "value": "下载"
+    },
+    {
+      "name": "add_favourite",
+      "value": "加入收藏"
+    },
+    {
+      "name": "in_favourites",
+      "value": "已收藏"
+    },
+    {
+      "name": "favourite_added",
+      "value": "已加入收藏"
+    },
+    {
+      "name": "download_video",
+      "value": "下载"
+    },
+    {
+      "name": "download_quality",
+      "value": "下载清晰度"
+    },
+    {
+      "name": "cancelled",
+      "value": "取消"
+    },
+    {
+      "name": "download_done",
+      "value": "下载完成"
+    },
+    {
+      "name": "download_failed",
+      "value": "下载失败"
+    },
+    {
+      "name": "downloading",
+      "value": "下载中"
+    },
+    {
+      "name": "download_started",
+      "value": "已开始下载"
+    },
+    {
+      "name": "download_paused",
+      "value": "已暂停"
+    },
+    {
+      "name": "audio_only",
+      "value": "仅音频"
+    },
+    {
+      "name": "pause_download",
+      "value": "暂停"
+    },
+    {
+      "name": "resume_download",
+      "value": "继续"
+    },
+    {
+      "name": "download_hint",
+      "value": "点一下即可保存到本机"
+    },
+    {
+      "name": "no_favourites",
+      "value": "还没有收藏"
+    },
+    {
+      "name": "no_downloads",
+      "value": "还没有下载"
+    },
+    {
+      "name": "delete",
+      "value": "删除"
+    },
+    {
+      "name": "downloaded",
+      "value": "已在本机"
+    },
+    {
+      "name": "loading",
+      "value": "加载中…"
+    },
+    {
+      "name": "no_more",
+      "value": "没有更多了"
+    },
+    {
+      "name": "quality",
+      "value": "清晰度"
+    },
+    {
+      "name": "auto",
+      "value": "自动"
+    },
+    {
+      "name": "views",
+      "value": "次观看"
+    },
+    {
+      "name": "save_player_positions",
+      "value": "记住播放进度"
+    },
+    {
+      "name": "default_quality",
+      "value": "默认清晰度"
+    },
+    {
+      "name": "default_speed",
+      "value": "默认速度"
+    },
+    {
+      "name": "export_settings",
+      "value": "导出设置"
+    },
+    {
+      "name": "import_settings",
+      "value": "导入设置"
+    },
+    {
+      "name": "settings_exported",
+      "value": "设置已导出"
+    },
+    {
+      "name": "settings_imported",
+      "value": "设置已导入"
+    },
+    {
+      "name": "settings_export_failed",
+      "value": "无法写入设置文件"
+    },
+    {
+      "name": "settings_import_failed",
+      "value": "无法读取该文件"
+    },
+    {
+      "name": "settings_not_ours",
+      "value": "这不是 SkanaTwiee 的设置文件"
+    },
+    {
+      "name": "resume_from",
+      "value": "从…继续"
+    },
+    {
+      "name": "channel_videos",
+      "value": "频道视频"
+    },
+    {
+      "name": "logout_confirm",
+      "value": "要退出 Twitch 登录吗？"
+    },
+    {
+      "name": "fullscreen",
+      "value": "全屏"
+    },
+    {
+      "name": "exit_fullscreen",
+      "value": "退出全屏"
+    },
+    {
+      "name": "language",
+      "value": "语言"
+    },
+    {
+      "name": "language_system",
+      "value": "跟随系统"
+    },
+    {
+      "name": "about_tagline",
+      "value": "SkanaTwiee · 以视频为主的 Xtra for Twitch 移植版"
+    },
+    {
+      "name": "language_needs_restart",
+      "value": "重启应用后切换生效"
+    }
+  ]
+}

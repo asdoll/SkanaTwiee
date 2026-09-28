@@ -1,0 +1,338 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "SkanaTwiee entry module"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "SkanaTwiee"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "SkanaTwiee"
+    },
+    {
+      "name": "app_title",
+      "value": "SkanaTwiee"
+    },
+    {
+      "name": "tab_following",
+      "value": "Following"
+    },
+    {
+      "name": "tab_search",
+      "value": "Search"
+    },
+    {
+      "name": "tab_settings",
+      "value": "Me"
+    },
+    {
+      "name": "settings",
+      "value": "Settings"
+    },
+    {
+      "name": "tab_live",
+      "value": "Live"
+    },
+    {
+      "name": "tab_users",
+      "value": "Users"
+    },
+    {
+      "name": "search_hint_live",
+      "value": "Search live channels"
+    },
+    {
+      "name": "search_hint_users",
+      "value": "Search users"
+    },
+    {
+      "name": "viewers",
+      "value": "viewers"
+    },
+    {
+      "name": "followers",
+      "value": "followers"
+    },
+    {
+      "name": "uptime",
+      "value": "uptime"
+    },
+    {
+      "name": "no_streams",
+      "value": "No live channels found"
+    },
+    {
+      "name": "no_users",
+      "value": "No users found"
+    },
+    {
+      "name": "channel_page",
+      "value": "Channel page"
+    },
+    {
+      "name": "speed",
+      "value": "Playback speed"
+    },
+    {
+      "name": "chat_hint",
+      "value": "Send a message"
+    },
+    {
+      "name": "no_emotes",
+      "value": "No emotes available"
+    },
+    {
+      "name": "live_login_required",
+      "value": "Log in with Twitch to see live channels you follow."
+    },
+    {
+      "name": "offline",
+      "value": "Offline"
+    },
+    {
+      "name": "no_followed_users",
+      "value": "No followed channels found"
+    },
+    {
+      "name": "follow",
+      "value": "Follow"
+    },
+    {
+      "name": "following",
+      "value": "Following"
+    },
+    {
+      "name": "videos",
+      "value": "Videos"
+    },
+    {
+      "name": "video_type_archive",
+      "value": "Past broadcast"
+    },
+    {
+      "name": "video_type_highlight",
+      "value": "Highlight"
+    },
+    {
+      "name": "video_type_upload",
+      "value": "Upload"
+    },
+    {
+      "name": "search_hint",
+      "value": "Search videos"
+    },
+    {
+      "name": "login",
+      "value": "Log in with Twitch"
+    },
+    {
+      "name": "logout",
+      "value": "Log out"
+    },
+    {
+      "name": "not_logged_in",
+      "value": "Not logged in"
+    },
+    {
+      "name": "login_required",
+      "value": "Log in with Twitch to see videos from channels you follow."
+    },
+    {
+      "name": "no_results",
+      "value": "No videos found"
+    },
+    {
+      "name": "load_failed",
+      "value": "Failed to load"
+    },
+    {
+      "name": "retry",
+      "value": "Retry"
+    },
+    {
+      "name": "error_hint",
+      "value": "Try another quality below, or retry."
+    },
+    {
+      "name": "favourites",
+      "value": "Favourites"
+    },
+    {
+      "name": "downloads",
+      "value": "Downloads"
+    },
+    {
+      "name": "add_favourite",
+      "value": "Add to favourites"
+    },
+    {
+      "name": "in_favourites",
+      "value": "In favourites"
+    },
+    {
+      "name": "favourite_added",
+      "value": "Added to favourites"
+    },
+    {
+      "name": "download_video",
+      "value": "Download"
+    },
+    {
+      "name": "download_quality",
+      "value": "Download quality"
+    },
+    {
+      "name": "cancelled",
+      "value": "Cancel"
+    },
+    {
+      "name": "download_done",
+      "value": "Download finished"
+    },
+    {
+      "name": "download_failed",
+      "value": "Download failed"
+    },
+    {
+      "name": "downloading",
+      "value": "Downloading"
+    },
+    {
+      "name": "download_started",
+      "value": "Download started"
+    },
+    {
+      "name": "download_paused",
+      "value": "Paused"
+    },
+    {
+      "name": "audio_only",
+      "value": "Audio only"
+    },
+    {
+      "name": "pause_download",
+      "value": "Pause"
+    },
+    {
+      "name": "resume_download",
+      "value": "Resume"
+    },
+    {
+      "name": "download_hint",
+      "value": "Tap to keep it on this device"
+    },
+    {
+      "name": "no_favourites",
+      "value": "Nothing favourited yet"
+    },
+    {
+      "name": "no_downloads",
+      "value": "No downloads yet"
+    },
+    {
+      "name": "delete",
+      "value": "Delete"
+    },
+    {
+      "name": "downloaded",
+      "value": "On this device"
+    },
+    {
+      "name": "loading",
+      "value": "Loading…"
+    },
+    {
+      "name": "no_more",
+      "value": "No more"
+    },
+    {
+      "name": "quality",
+      "value": "Quality"
+    },
+    {
+      "name": "auto",
+      "value": "Auto"
+    },
+    {
+      "name": "views",
+      "value": "views"
+    },
+    {
+      "name": "save_player_positions",
+      "value": "Remember playback position"
+    },    {
+      "name": "default_quality",
+      "value": "Default quality"
+    },
+    {
+      "name": "default_speed",
+      "value": "Default speed"
+    },
+    {
+      "name": "export_settings",
+      "value": "Export settings"
+    },
+    {
+      "name": "import_settings",
+      "value": "Import settings"
+    },
+    {
+      "name": "settings_exported",
+      "value": "Settings exported"
+    },
+    {
+      "name": "settings_imported",
+      "value": "Settings imported"
+    },
+    {
+      "name": "settings_export_failed",
+      "value": "Could not write the settings file"
+    },
+    {
+      "name": "settings_import_failed",
+      "value": "Could not read that file"
+    },
+    {
+      "name": "settings_not_ours",
+      "value": "That is not a SkanaTwiee settings file"
+    },    {
+      "name": "resume_from",
+      "value": "Resume from"
+    },
+    {
+      "name": "channel_videos",
+      "value": "Channel videos"
+    },
+    {
+      "name": "logout_confirm",
+      "value": "Log out of Twitch?"
+    },
+    {
+      "name": "fullscreen",
+      "value": "Fullscreen"
+    },
+    {
+      "name": "exit_fullscreen",
+      "value": "Exit fullscreen"
+    },
+    {
+      "name": "language",
+      "value": "Language"
+    },
+    {
+      "name": "language_system",
+      "value": "System default"
+    },
+    {
+      "name": "about_tagline",
+      "value": "SkanaTwiee · video-first port of Xtra for Twitch"
+    },
+    {
+      "name": "language_needs_restart",
+      "value": "Restart the app to switch language"
+    }
+  ]
+}
