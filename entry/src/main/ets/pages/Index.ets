@@ -48,6 +48,12 @@ const BOTTOM_BAR_HEIGHT: number = 56;
 const BOTTOM_BAR_GAP: number = 12;
 /** How long the header takes to slide away or come back. */
 const HEADER_ANIMATION_MS: number = 220;
+/** Horizontal travel that turns a swipe on a list into a section change, in vp. */
+const SECTION_SWIPE_DISTANCE: number = 60;
+/** How long a section slide takes. */
+const SECTION_ANIMATION_MS: number = 240;
+/** How far a section slides in, as a percentage of its own width. */
+const SECTION_SLIDE_PERCENT: number = 30;
 
 /**
  * App shell.
@@ -64,6 +70,13 @@ struct Index {
   @State currentTab: number = TAB_FOLLOWING;
   @State followingSection: number = FOLLOWING_LIVE;
   @State searchSection: number = SEARCH_LIVE;
+  /**
+   * Direction of the section change in progress: 1 for the next section, -1 for
+   * the previous one. The slide transition reads it, so it has to be set before
+   * the section itself changes - a component plays the transition it was built
+   * with, and the new section is only built once this has its new value.
+   */
+  @State sectionDirection: number = 1;
   /** True while the section header is translated off-screen. */
   @State headerHidden: boolean = false;
   @State loggedIn: boolean = false;
@@ -171,6 +184,77 @@ struct Index {
     }
   }
 
+  /**
+   * Moves one section along, in the direction the content was dragged: swiping
+   * left brings the next section in and swiping right the previous one.
+   *
+   * The ends are a stop, not a wrap. The labels are in a fixed order, so carrying
+   * the last one round to the first would make the header read as though the
+   * swipe had gone backwards.
+   */
+  private switchSection(step: number): void {
+    if (this.currentTab === TAB_FOLLOWING) {
+      const next: number = this.followingSection + step;
+      if (next >= FOLLOWING_LIVE && next <= FOLLOWING_USERS) {
+        this.selectSectionByIndex(next);
+      }
+    } else if (this.currentTab === TAB_SEARCH) {
+      const next: number = this.searchSection + step;
+      if (next >= SEARCH_LIVE && next <= SEARCH_USERS) {
+        this.selectSectionByIndex(next);
+      }
+    }
+  }
+
+  /**
+   * Applies a section change, whether it was swiped to or tapped in the header.
+   *
+   * The direction is worked out here so the slide goes the way the label moved,
+   * not the way the last swipe did: the transition is read when the section is
+   * rebuilt, so it has to be set before the section itself changes.
+   */
+  private selectSectionByIndex(index: number): void {
+    const current: number = this.currentTab === TAB_FOLLOWING
+      ? this.followingSection : this.searchSection;
+    if (index === current) {
+      return;
+    }
+    this.sectionDirection = index > current ? 1 : -1;
+    if (this.currentTab === TAB_FOLLOWING) {
+      this.selectFollowingSection(index);
+    } else {
+      this.selectSearchSection(index);
+    }
+  }
+
+  /**
+   * The slide a section change plays.
+   *
+   * The section coming in slides in from the side the change went towards and the
+   * one leaving fades. A slide-out would need the direction too, and a leaving
+   * component plays the transition it was built with - the direction of the
+   * change that brought *it* in, not this one - so it would slide the wrong way
+   * the moment a swipe turns round.
+   */
+  private sectionTransition(): TransitionEffect {
+    return TransitionEffect.asymmetric(
+      TransitionEffect.OPACITY
+        .combine(TransitionEffect.translate({ x: `${this.sectionDirection * SECTION_SLIDE_PERCENT}%` }))
+        .animation({ duration: SECTION_ANIMATION_MS, curve: Curve.FastOutSlowIn }),
+      TransitionEffect.OPACITY
+        .animation({ duration: SECTION_ANIMATION_MS, curve: Curve.FastOutSlowIn })
+    );
+  }
+
+  /** Turns a finished horizontal swipe into a section change, when it travelled far enough. */
+  private onSectionSwipe(offsetX: number): void {
+    if (offsetX <= -SECTION_SWIPE_DISTANCE) {
+      this.switchSection(1);
+    } else if (offsetX >= SECTION_SWIPE_DISTANCE) {
+      this.switchSection(-1);
+    }
+  }
+
   private submitSearch(): void {
     this.submittedQuery = this.searchQuery;
   }
@@ -252,11 +336,7 @@ struct Index {
           offsetY: this.headerHidden ? -this.headerHeight() : 0,
           visible: !this.headerHidden,
           onSelect: (index: number): void => {
-            if (this.currentTab === TAB_FOLLOWING) {
-              this.selectFollowingSection(index);
-            } else {
-              this.selectSearchSection(index);
-            }
+            this.selectSectionByIndex(index);
           }
         }) {
           if (this.currentTab === TAB_SEARCH) {
@@ -402,6 +482,7 @@ struct Index {
           }
         })
           .layoutWeight(1)
+          .transition(this.sectionTransition())
       } else if (this.followingSection === FOLLOWING_USERS) {
         FollowedUserList({
           reloadKey: `followed_users_${this.user.id}_${this.followVersion}`,
@@ -415,6 +496,7 @@ struct Index {
           }
         })
           .layoutWeight(1)
+          .transition(this.sectionTransition())
       } else {
         VideoList({
           reloadKey: `followed_${this.user.id}_${this.followVersion}`,
@@ -428,11 +510,21 @@ struct Index {
           }
         })
           .layoutWeight(1)
+          .transition(this.sectionTransition())
       }
     }
     .width('100%')
     .height('100%')
     .backgroundColor($r('app.color.background'))
+    // A horizontal swipe moves between Live, Videos and Users. The lists keep
+    // their vertical scroll: the pan only claims horizontal travel, so the two
+    // never take the same drag.
+    .gesture(
+      PanGesture({ direction: PanDirection.Horizontal, distance: SECTION_SWIPE_DISTANCE })
+        .onActionEnd((event: GestureEvent) => {
+          this.onSectionSwipe(event.offsetX);
+        })
+    )
   }
 
   /* --------------------------- search sections --------------------------- */
@@ -455,6 +547,7 @@ struct Index {
           }
         })
           .layoutWeight(1)
+          .transition(this.sectionTransition())
       } else if (this.searchSection === SEARCH_VIDEOS) {
         VideoList({
           reloadKey: this.submittedQuery,
@@ -468,6 +561,7 @@ struct Index {
           }
         })
           .layoutWeight(1)
+          .transition(this.sectionTransition())
       } else {
         UserList({
           reloadKey: this.submittedQuery,
@@ -481,11 +575,19 @@ struct Index {
           }
         })
           .layoutWeight(1)
+          .transition(this.sectionTransition())
       }
     }
     .width('100%')
     .height('100%')
     .backgroundColor($r('app.color.background'))
+    // Same gesture as the Following page; the sections go Live, Videos, Users.
+    .gesture(
+      PanGesture({ direction: PanDirection.Horizontal, distance: SECTION_SWIPE_DISTANCE })
+        .onActionEnd((event: GestureEvent) => {
+          this.onSectionSwipe(event.offsetX);
+        })
+    )
   }
 
   /* ------------------------------- me ------------------------------- */
@@ -631,6 +733,7 @@ struct Index {
     .width('100%')
     .layoutWeight(1)
     .justifyContent(FlexAlign.Center)
+    .transition(this.sectionTransition())
   }
 
   private openLogin(): void {

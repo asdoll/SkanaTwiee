@@ -60,6 +60,18 @@ const MAX_CHAT_LINES: number = 300;
  * whole video.
  */
 const PROGRESS_INTERVAL_MS: number = 1000;
+/**
+ * Horizontal travel that arms the seek swipe, in vp. Small enough for the
+ * gesture to be recognised promptly, large enough that it cannot be mistaken for
+ * the tap that toggles the controls.
+ */
+const SEEK_SWIPE_DISTANCE: number = 24;
+/** Floor for the drag's seek rate, in ms per vp. */
+const SEEK_MS_PER_VP_MIN: number = 500;
+/** Ceiling for the drag's seek rate, in ms per vp. */
+const SEEK_MS_PER_VP_MAX: number = 4000;
+/** Divisor that scales the drag's seek rate to the video's own length. */
+const SEEK_RATE_DIVISOR: number = 600;
 
 /**
  * Preferred order for an automatic download: a rendition small enough to be
@@ -144,6 +156,12 @@ export struct PlayerPage {
   @State favourite: boolean = false;
   /** The download-quality sheet, which is what the menu's download entry opens. */
   @State showDownload: boolean = false;
+  /** True while a horizontal seek swipe is dragging the progress bar. */
+  @State seeking: boolean = false;
+  /** Where the seek swipe has dragged playback to; the bar and preview follow it. */
+  @State seekTargetMs: number = 0;
+  /** Signed change the seek swipe has made so far, shown by the preview. */
+  @State seekDeltaMs: number = 0;
 
   videoId: string = '';
   channelLogin: string = '';
@@ -154,6 +172,8 @@ export struct PlayerPage {
   surfaceId: string = '';
   surfaceReady: boolean = false;
   scrubbing: boolean = false;
+  /** Position playback was at when a horizontal seek swipe began. */
+  seekStartMs: number = 0;
   parsedQualities: Quality[] = [];
   availableBitrates: number[] = [];
   hideTimer: number = -1;
@@ -368,7 +388,8 @@ export struct PlayerPage {
         .width('100%')
         .height('100%')
 
-      // Tap target for toggling the controls.
+      // Tap target for toggling the controls, and the seek surface while they
+      // are up: a tap brings the bars in or out, a horizontal drag moves the bar.
       Column()
         .width('100%')
         .height('100%')
@@ -376,6 +397,21 @@ export struct PlayerPage {
         .onClick(() => {
           this.toggleControls();
         })
+        .gesture(
+          PanGesture({ direction: PanDirection.Horizontal, distance: SEEK_SWIPE_DISTANCE })
+            .onActionStart(() => {
+              this.beginSeekSwipe();
+            })
+            .onActionUpdate((event: GestureEvent) => {
+              this.updateSeekSwipe(event.offsetX);
+            })
+            .onActionEnd(() => {
+              this.endSeekSwipe();
+            })
+            .onActionCancel(() => {
+              this.cancelSeekSwipe();
+            })
+        )
 
       // The control wash. It goes under the loading and error layers so those
       // keep full contrast, and lets taps through to the target above.
@@ -456,10 +492,16 @@ export struct PlayerPage {
       // playback screen stays about playback.
       if (this.showControls && this.status !== STATUS_LOADING) {
         this.topBar()
-        if (this.status === STATUS_READY) {
+        // The seek readout takes the big play button's place while the bar is
+        // being dragged, so the two never sit on top of one another.
+        if (this.status === STATUS_READY && !this.seeking) {
           this.centerControls()
         }
         this.bottomBar()
+      }
+
+      if (this.seeking) {
+        this.seekPreview()
       }
     }
     .width('100%')
@@ -657,6 +699,36 @@ export struct PlayerPage {
     .height('100%')
     .justifyContent(FlexAlign.Center)
     .hitTestBehavior(HitTestMode.Transparent)
+  }
+
+  /**
+   * The seek readout shown while a horizontal drag is moving the bar: where the
+   * drag has got to, and how far it has moved from where playback was.
+   *
+   * Purely a readout, so every touch belongs to the surface underneath and the
+   * gesture that opened it keeps receiving the drag.
+   */
+  @Builder
+  seekPreview() {
+    Column() {
+      Column({ space: 2 }) {
+        Text(TwitchHelper.formatPlaybackTime(this.seekTargetMs))
+          .fontSize(20)
+          .fontWeight(FontWeight.Medium)
+          .fontColor(Color.White)
+
+        Text(this.seekDeltaLabel())
+          .fontSize(13)
+          .fontColor($r('app.color.accent'))
+      }
+      .padding({ left: 18, right: 18, top: 10, bottom: 10 })
+      .backgroundColor('#B3000000')
+      .borderRadius(12)
+    }
+    .width('100%')
+    .height('100%')
+    .justifyContent(FlexAlign.Center)
+    .hitTestBehavior(HitTestMode.None)
   }
 
   /**
@@ -1657,6 +1729,94 @@ export struct PlayerPage {
       this.resetReplay(value);
     }
     this.scheduleHideTimer();
+  }
+
+  /* --------------------------- seek swipe --------------------------- */
+
+  /**
+   * How much of the video one vp of horizontal drag covers.
+   *
+   * Scaled to the video's own length, so the same gesture feels the same on a
+   * three-minute clip and a three-hour broadcast, and bounded at both ends:
+   * without the floor a long video would take far too many swipes to cross,
+   * without the ceiling a short one would leap about at the lightest touch.
+   */
+  private seekMsPerVp(): number {
+    const scaled: number = this.durationMs / SEEK_RATE_DIVISOR;
+    return Math.max(SEEK_MS_PER_VP_MIN, Math.min(SEEK_MS_PER_VP_MAX, scaled));
+  }
+
+  /**
+   * Starts a seek swipe.
+   *
+   * Only meaningful with the controls up - that is the state the progress bar is
+   * in, and the state the gesture is for - and only with a duration to move
+   * along: a live stream has no progress to adjust.
+   */
+  private beginSeekSwipe(): void {
+    if (!this.showControls || this.status !== STATUS_READY || this.durationMs <= 0
+      || this.seeking) {
+      return;
+    }
+    this.seeking = true;
+    // Reused by the scrubber: while it is set, the player's own time updates are
+    // not allowed to pull the bar back to the position still being played.
+    this.scrubbing = true;
+    this.seekStartMs = this.positionMs;
+    this.seekTargetMs = this.positionMs;
+    this.seekDeltaMs = 0;
+    this.clearHideTimer();
+  }
+
+  /** Drags the bar: the preview and the slider both follow the finger. */
+  private updateSeekSwipe(offsetX: number): void {
+    if (!this.seeking) {
+      return;
+    }
+    const moved: number = this.seekStartMs + offsetX * this.seekMsPerVp();
+    this.seekTargetMs = Math.max(0, Math.min(this.durationMs, moved));
+    this.seekDeltaMs = this.seekTargetMs - this.seekStartMs;
+    this.positionMs = this.seekTargetMs;
+  }
+
+  /** Lands the swipe on the position it reached. */
+  private endSeekSwipe(): void {
+    if (!this.seeking) {
+      return;
+    }
+    const target: number = this.seekTargetMs;
+    this.clearSeekSwipe();
+    this.seekTo(target);
+    if (!this.isLive) {
+      // A comment belongs to a moment of the video, so the replay follows the seek.
+      this.resetReplay(target);
+    }
+    this.scheduleHideTimer();
+  }
+
+  /**
+   * A cancelled drag just puts the bar back: playback never left where it was, so
+   * there is nothing to seek to.
+   */
+  private cancelSeekSwipe(): void {
+    if (!this.seeking) {
+      return;
+    }
+    this.clearSeekSwipe();
+    this.scheduleHideTimer();
+  }
+
+  private clearSeekSwipe(): void {
+    this.seeking = false;
+    this.scrubbing = false;
+    this.seekDeltaMs = 0;
+    this.seekTargetMs = 0;
+  }
+
+  /** "+1:30" / "-0:45" for the seek in progress. */
+  private seekDeltaLabel(): string {
+    const sign: string = this.seekDeltaMs < 0 ? '-' : '+';
+    return `${sign}${TwitchHelper.formatPlaybackTime(Math.abs(this.seekDeltaMs))}`;
   }
 
   /* --------------------------- qualities --------------------------- */

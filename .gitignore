@@ -12,3 +12,4 @@
 /.appanalyzer
 
 /build-profile.json5
+.DS_Store
